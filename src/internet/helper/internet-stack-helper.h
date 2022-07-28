@@ -83,8 +83,10 @@ class Ipv6RoutingHelper;
  *  - Ipv4 routing (a list routing object, a global routing object, and a static routing object)
  *  - Ipv6 routing (a static routing object)
  */
-class InternetStackHelper : public PcapHelperForIpv4, public PcapHelperForIpv6, 
-                            public AsciiTraceHelperForIpv4, public AsciiTraceHelperForIpv6
+class InternetStackHelper : public PcapHelperForIpv4,
+                            public PcapHelperForIpv6,
+                            public AsciiTraceHelperForIpv4,
+                            public AsciiTraceHelperForIpv6
 {
 public:
   /**
@@ -96,12 +98,12 @@ public:
    * routing protocols, you need to use an adhoc ns3::Ipv4RoutingHelper, 
    * such as ns3::OlsrHelper
    */
-  InternetStackHelper(void);
+  InternetStackHelper (void);
 
   /**
    * Destroy the InternetStackHelper
    */
-  virtual ~InternetStackHelper(void);
+  virtual ~InternetStackHelper (void);
 
   /**
    * \brief Copy constructor
@@ -114,7 +116,7 @@ public:
    * \param o Object to copy from.
    * \returns A copy of the InternetStackHelper.
    */
-  InternetStackHelper &operator = (const InternetStackHelper &o);
+  InternetStackHelper &operator= (const InternetStackHelper &o);
 
   /**
    * Return helper internal state to that of a newly constructed one
@@ -164,6 +166,8 @@ public:
    * 
    * \param c NodeContainer that holds the set of nodes on which to install the
    * new stacks.
+   * 
+   * 对于输入容器之中的每个节点，进行TCP/IP协议栈的安装，包括Ipv4,Ipv6,Tcp,Udp
    */
   void Install (NodeContainer c) const;
 
@@ -231,9 +235,7 @@ private:
    * @param interface Interface ID on the Ipv4 on which you want to enable tracing.
    * @param explicitFilename Treat the prefix as an explicit filename if true
    */
-  virtual void EnablePcapIpv4Internal (std::string prefix, 
-                                       Ptr<Ipv4> ipv4, 
-                                       uint32_t interface,
+  virtual void EnablePcapIpv4Internal (std::string prefix, Ptr<Ipv4> ipv4, uint32_t interface,
                                        bool explicitFilename);
 
   /**
@@ -246,11 +248,8 @@ private:
    * @param interface Interface ID on the Ipv4 on which you want to enable tracing.
    * @param explicitFilename Treat the prefix as an explicit filename if true
    */
-  virtual void EnableAsciiIpv4Internal (Ptr<OutputStreamWrapper> stream, 
-                                        std::string prefix, 
-                                        Ptr<Ipv4> ipv4, 
-                                        uint32_t interface,
-                                        bool explicitFilename);
+  virtual void EnableAsciiIpv4Internal (Ptr<OutputStreamWrapper> stream, std::string prefix,
+                                        Ptr<Ipv4> ipv4, uint32_t interface, bool explicitFilename);
 
   /**
    * @brief Enable pcap output the indicated Ipv6 and interface pair.
@@ -260,9 +259,7 @@ private:
    * @param interface Interface ID on the Ipv6 on which you want to enable tracing.
    * @param explicitFilename Treat the prefix as an explicit filename if true
    */
-  virtual void EnablePcapIpv6Internal (std::string prefix, 
-                                       Ptr<Ipv6> ipv6, 
-                                       uint32_t interface,
+  virtual void EnablePcapIpv6Internal (std::string prefix, Ptr<Ipv6> ipv6, uint32_t interface,
                                        bool explicitFilename);
 
   /**
@@ -275,11 +272,8 @@ private:
    * @param interface Interface ID on the Ipv6 on which you want to enable tracing.
    * @param explicitFilename Treat the prefix as an explicit filename if true
    */
-  virtual void EnableAsciiIpv6Internal (Ptr<OutputStreamWrapper> stream, 
-                                        std::string prefix, 
-                                        Ptr<Ipv6> ipv6, 
-                                        uint32_t interface,
-                                        bool explicitFilename);
+  virtual void EnableAsciiIpv6Internal (Ptr<OutputStreamWrapper> stream, std::string prefix,
+                                        Ptr<Ipv6> ipv6, uint32_t interface, bool explicitFilename);
 
   /**
    * \brief Initialize the helper to its default values

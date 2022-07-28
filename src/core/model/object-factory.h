@@ -41,6 +41,8 @@ class AttributeValue;
  *
  * This class can also hold a set of attributes to set
  * automatically during the object construction.
+ * 
+ * 这个类可以拥有一系列属性，然后在创建对象的时候进行自动的设置
  *
  * \see attribute_ObjectFactory
  */
@@ -65,7 +67,7 @@ public:
    * name (of std::string type) followed by a value (of const AttributeValue & type).
    */
   template <typename... Args>
-  ObjectFactory (const std::string& typeId, Args&&... args);
+  ObjectFactory (const std::string &typeId, Args &&...args);
 
   /**@{*/
   /**
@@ -97,14 +99,16 @@ public:
    * name (of std::string type) followed by a value (of const AttributeValue & type).
    */
   template <typename... Args>
-  void Set (const std::string &name, const AttributeValue &value, Args&&... args);
+  void Set (const std::string &name, const AttributeValue &value, Args &&...args);
 
   /**
    * Base case to stop the recursion performed by the templated version of this
    * method.
    */
-  void Set (void)
-  { }
+  void
+  Set (void)
+  {
+  }
 
   /**
    * Get the TypeId which will be created by this ObjectFactory.
@@ -149,7 +153,7 @@ private:
    * \param [in] factory The ObjectFactory.
    * \returns The stream.
    */
-  friend std::ostream & operator << (std::ostream &os, const ObjectFactory &factory);
+  friend std::ostream &operator<< (std::ostream &os, const ObjectFactory &factory);
   /**
    * Read a factory configuration from an input stream.
    *
@@ -160,7 +164,7 @@ private:
    * \param [out] factory The factory to configure as described by the stream.
    * \return The stream.
    */
-  friend std::istream & operator >> (std::istream &is, ObjectFactory &factory);
+  friend std::istream &operator>> (std::istream &is, ObjectFactory &factory);
 
   /** The TypeId this factory will create. */
   TypeId m_tid;
@@ -171,9 +175,8 @@ private:
   AttributeConstructionList m_parameters;
 };
 
-std::ostream & operator << (std::ostream &os, const ObjectFactory &factory);
-std::istream & operator >> (std::istream &is, ObjectFactory &factory);
-
+std::ostream &operator<< (std::ostream &os, const ObjectFactory &factory);
+std::istream &operator>> (std::istream &is, ObjectFactory &factory);
 
 /**
  * \ingroup object
@@ -188,14 +191,11 @@ std::istream & operator >> (std::istream &is, ObjectFactory &factory);
  * name (of std::string type) followed by a value (of const AttributeValue & type).
  */
 template <typename T, typename... Args>
-Ptr<T>
-CreateObjectWithAttributes (Args... args);
-
+Ptr<T> CreateObjectWithAttributes (Args... args);
 
 ATTRIBUTE_HELPER_HEADER (ObjectFactory);
 
 } // namespace ns3
-
 
 /***************************************************************
  *  Implementation of the templates declared above.
@@ -212,7 +212,7 @@ ObjectFactory::Create (void) const
 }
 
 template <typename... Args>
-ObjectFactory::ObjectFactory (const std::string& typeId, Args&&... args)
+ObjectFactory::ObjectFactory (const std::string &typeId, Args &&...args)
 {
   SetTypeId (typeId);
   Set (args...);
@@ -220,7 +220,7 @@ ObjectFactory::ObjectFactory (const std::string& typeId, Args&&... args)
 
 template <typename... Args>
 void
-ObjectFactory::Set (const std::string &name, const AttributeValue & value, Args&&... args)
+ObjectFactory::Set (const std::string &name, const AttributeValue &value, Args &&...args)
 {
   DoSet (name, value);
   Set (args...);
@@ -235,7 +235,6 @@ CreateObjectWithAttributes (Args... args)
   factory.Set (args...);
   return factory.Create<T> ();
 }
-
 
 } // namespace ns3
 

@@ -31,6 +31,7 @@ class Socket;
  * 
  * This can be used as an interface in a node in order for the node to
  * generate PacketSockets that can connect to net devices.
+ * 这可以用作节点中的接口，以便节点生成可以连接到网络设备的 PacketSocket。
  */
 class PacketSocketFactory : public SocketFactory
 {

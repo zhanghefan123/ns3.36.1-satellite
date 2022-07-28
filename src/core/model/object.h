@@ -134,8 +134,8 @@ public:
      * \param [in] object The Object whose Aggregates should be iterated over.
      */
     AggregateIterator (Ptr<const Object> object);
-    Ptr<const Object> m_object;                    //!< Parent Object.
-    uint32_t m_current;                            //!< Current position in parent's aggregates.
+    Ptr<const Object> m_object; //!< Parent Object.
+    uint32_t m_current; //!< Current position in parent's aggregates.
   };
 
   /** Constructor. */
@@ -189,6 +189,9 @@ public:
    * This method aggregates the two Objects together: after this
    * method returns, it becomes possible to call GetObject()
    * on one to get the other, and vice-versa.
+   * 
+   * 此方法将两个对象聚合在一起：此方法返回后，
+   * 可以在一个对象上调用 GetObject() 来获取另一个对象，反之亦然。
    *
    * This method calls the virtual method NotifyNewAggregates() to
    * notify all aggregated Objects that they have been aggregated
@@ -296,7 +299,6 @@ protected:
   Object (const Object &o);
 
 private:
-
   /**
    * Copy an Object.
    *
@@ -434,7 +436,7 @@ private:
    * array.  The array is shared by all aggregated Objects
    * so the size of the array is indirectly a reference count.
    */
-  struct Aggregates * m_aggregates;
+  struct Aggregates *m_aggregates;
   /**
    * The number of times the Object was accessed with a
    * call to GetObject().
@@ -453,7 +455,6 @@ Ptr<T> CopyObject (Ptr<T> object);
 } // namespace ns3
 
 namespace ns3 {
-
 
 /*************************************************************************
  *   The Object implementation which depends on templates
@@ -491,8 +492,7 @@ Object::GetObject () const
  *
  * \returns A Ptr to the calling object.
  */
-template
-<>
+template <>
 inline Ptr<Object>
 Object::GetObject () const
 {
@@ -518,8 +518,7 @@ Object::GetObject (TypeId tid) const
  * \param [in] tid The TypeId of the requested Object.
  * \returns A Ptr to the calling object.
  */
-template
-<>
+template <>
 inline Ptr<Object>
 Object::GetObject (TypeId tid) const
 {
@@ -538,7 +537,8 @@ Object::GetObject (TypeId tid) const
  *************************************************************************/
 
 template <typename T>
-Ptr<T> CopyObject (Ptr<T> object)
+Ptr<T>
+CopyObject (Ptr<T> object)
 {
   Ptr<T> p = Ptr<T> (new T (*PeekPointer (object)), false);
   NS_ASSERT (p->GetInstanceTypeId () == object->GetInstanceTypeId ());
@@ -546,7 +546,8 @@ Ptr<T> CopyObject (Ptr<T> object)
 }
 
 template <typename T>
-Ptr<T> CopyObject (Ptr<const T> object)
+Ptr<T>
+CopyObject (Ptr<const T> object)
 {
   Ptr<T> p = Ptr<T> (new T (*PeekPointer (object)), false);
   NS_ASSERT (p->GetInstanceTypeId () == object->GetInstanceTypeId ());
@@ -554,7 +555,8 @@ Ptr<T> CopyObject (Ptr<const T> object)
 }
 
 template <typename T>
-Ptr<T> CompleteConstruct (T *object)
+Ptr<T>
+CompleteConstruct (T *object)
 {
   object->SetTypeId (T::GetTypeId ());
   object->Object::Construct (AttributeConstructionList ());
@@ -573,7 +575,8 @@ Ptr<T> CompleteConstruct (T *object)
  * \return The derived object.
  */
 template <typename T, typename... Args>
-Ptr<T> CreateObject (Args&&... args)
+Ptr<T>
+CreateObject (Args &&...args)
 {
   return CompleteConstruct (new T (std::forward<Args> (args)...));
 }
@@ -582,4 +585,3 @@ Ptr<T> CreateObject (Args&&... args)
 } // namespace ns3
 
 #endif /* OBJECT_H */
-

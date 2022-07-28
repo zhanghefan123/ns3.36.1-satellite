@@ -40,8 +40,7 @@ class Node;
  * PcapUserHelperForDevice and AsciiTraceUserHelperForDevice are
  * "mixins".
  */
-class PointToPointHelper : public PcapHelperForDevice,
-	                   public AsciiTraceHelperForDevice
+class PointToPointHelper : public PcapHelperForDevice, public AsciiTraceHelperForDevice
 {
 public:
   /**
@@ -49,7 +48,9 @@ public:
    * point networks.
    */
   PointToPointHelper ();
-  virtual ~PointToPointHelper () {}
+  virtual ~PointToPointHelper ()
+  {
+  }
 
   /**
    * Each point to point net device must have a queue to pass packets through.
@@ -69,11 +70,11 @@ public:
    * Set the type of queue to create and associated to each
    * PointToPointNetDevice created through PointToPointHelper::Install.
    */
-  void SetQueue (std::string type,
-                 std::string n1 = "", const AttributeValue &v1 = EmptyAttributeValue (),
-                 std::string n2 = "", const AttributeValue &v2 = EmptyAttributeValue (),
-                 std::string n3 = "", const AttributeValue &v3 = EmptyAttributeValue (),
-                 std::string n4 = "", const AttributeValue &v4 = EmptyAttributeValue ());
+  void SetQueue (std::string type, std::string n1 = "",
+                 const AttributeValue &v1 = EmptyAttributeValue (), std::string n2 = "",
+                 const AttributeValue &v2 = EmptyAttributeValue (), std::string n3 = "",
+                 const AttributeValue &v3 = EmptyAttributeValue (), std::string n4 = "",
+                 const AttributeValue &v4 = EmptyAttributeValue ());
 
   /**
    * Set an attribute value to be propagated to each NetDevice created by the
@@ -119,6 +120,11 @@ public:
    * ns3::PointToPointNetDevice with the requested attributes, 
    * a queue for this ns3::NetDevice, and associate the resulting 
    * ns3::NetDevice with the ns3::Node and ns3::PointToPointChannel.
+   * 
+   * 该方法创建一个ns3::PointToPointChannel,其属性由PointToPointHelper::SetChnnelAttribute进行
+   * 配置，然后对于输入容器中的每个节点，我们创建一个具有请求属性的ns3::PointToPointNetDevice，为此
+   * ns3::NetDevice与ns3::Node和ns3::PointToPointChannel相关联。
+   * 
    */
   NetDeviceContainer Install (NodeContainer c);
 
@@ -172,7 +178,8 @@ private:
    * \param promiscuous If true capture all possible packets available at the device.
    * \param explicitFilename Treat the prefix as an explicit filename if true
    */
-  virtual void EnablePcapInternal (std::string prefix, Ptr<NetDevice> nd, bool promiscuous, bool explicitFilename);
+  virtual void EnablePcapInternal (std::string prefix, Ptr<NetDevice> nd, bool promiscuous,
+                                   bool explicitFilename);
 
   /**
    * \brief Enable ascii trace output on the indicated net device.
@@ -185,16 +192,13 @@ private:
    * \param nd Net device for which you want to enable tracing.
    * \param explicitFilename Treat the prefix as an explicit filename if true
    */
-  virtual void EnableAsciiInternal (
-    Ptr<OutputStreamWrapper> stream,
-    std::string prefix,
-    Ptr<NetDevice> nd,
-    bool explicitFilename);
+  virtual void EnableAsciiInternal (Ptr<OutputStreamWrapper> stream, std::string prefix,
+                                    Ptr<NetDevice> nd, bool explicitFilename);
 
-  ObjectFactory m_queueFactory;         //!< Queue Factory
-  ObjectFactory m_channelFactory;       //!< Channel Factory
-  ObjectFactory m_deviceFactory;        //!< Device Factory
-  bool m_enableFlowControl;             //!< whether to enable flow control
+  ObjectFactory m_queueFactory; //!< Queue Factory
+  ObjectFactory m_channelFactory; //!< Channel Factory
+  ObjectFactory m_deviceFactory; //!< Device Factory
+  bool m_enableFlowControl; //!< whether to enable flow control
 };
 
 } // namespace ns3

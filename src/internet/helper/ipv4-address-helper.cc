@@ -34,15 +34,15 @@ namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("Ipv4AddressHelper");
 
-Ipv4AddressHelper::Ipv4AddressHelper () 
+Ipv4AddressHelper::Ipv4AddressHelper ()
 {
   NS_LOG_FUNCTION_NOARGS ();
 
-//
-// Set the default values to an illegal state.  Do this so the client is 
-// forced to think at least briefly about what addresses get used and what
-// is going on here.
-//
+  //
+  // Set the default values to an illegal state.  Do this so the client is
+  // forced to think at least briefly about what addresses get used and what
+  // is going on here.
+  //
   m_network = 0xffffffff;
   m_mask = 0;
   m_address = 0xffffffff;
@@ -51,20 +51,16 @@ Ipv4AddressHelper::Ipv4AddressHelper ()
   m_max = 0xffffffff;
 }
 
-Ipv4AddressHelper::Ipv4AddressHelper (
-  const Ipv4Address network, 
-  const Ipv4Mask    mask,
-  const Ipv4Address address)
+Ipv4AddressHelper::Ipv4AddressHelper (const Ipv4Address network, const Ipv4Mask mask,
+                                      const Ipv4Address address)
 {
   NS_LOG_FUNCTION_NOARGS ();
   SetBase (network, mask, address);
 }
 
 void
-Ipv4AddressHelper::SetBase (
-  const Ipv4Address network, 
-  const Ipv4Mask mask,
-  const Ipv4Address address)
+Ipv4AddressHelper::SetBase (const Ipv4Address network, const Ipv4Mask mask,
+                            const Ipv4Address address)
 {
   NS_LOG_FUNCTION_NOARGS ();
 
@@ -72,25 +68,24 @@ Ipv4AddressHelper::SetBase (
   m_mask = mask.Get ();
   m_base = m_address = address.Get ();
 
-//
-// Some quick reasonableness testing.
-//
+  //
+  // Some quick reasonableness testing.
+  //
   NS_ASSERT_MSG ((m_network & ~m_mask) == 0,
                  "Ipv4AddressHelper::SetBase(): Inconsistent network and mask");
 
-//
-// Figure out how much to shift network numbers to get them aligned, and what
-// the maximum allowed address is with respect to the current mask.
-//
+  //
+  // Figure out how much to shift network numbers to get them aligned, and what
+  // the maximum allowed address is with respect to the current mask.
+  //
   m_shift = NumAddressBits (m_mask);
   m_max = (1 << m_shift) - 2;
 
-  NS_ASSERT_MSG (m_shift <= 32,
-                 "Ipv4AddressHelper::SetBase(): Unreasonable address length");
+  NS_ASSERT_MSG (m_shift <= 32, "Ipv4AddressHelper::SetBase(): Unreasonable address length");
 
-//
-// Shift the network down into the normalized position.
-//
+  //
+  // Shift the network down into the normalized position.
+  //
   m_network >>= m_shift;
 
   NS_LOG_LOGIC ("m_network == " << m_network);
@@ -101,23 +96,22 @@ Ipv4AddressHelper::SetBase (
 Ipv4Address
 Ipv4AddressHelper::NewAddress (void)
 {
-//
-// The way this is expected to be used is that an address and network number
-// are initialized, and then NewAddress() is called repeatedly to allocate and
-// get new addresses on a given subnet.  The client will expect that the first
-// address she gets back is the one she used to initialize the generator with.
-// This implies that this operation is a post-increment.
-//
-  NS_ASSERT_MSG (m_address <= m_max,
-                 "Ipv4AddressHelper::NewAddress(): Address overflow");
+  //
+  // The way this is expected to be used is that an address and network number
+  // are initialized, and then NewAddress() is called repeatedly to allocate and
+  // get new addresses on a given subnet.  The client will expect that the first
+  // address she gets back is the one she used to initialize the generator with.
+  // This implies that this operation is a post-increment.
+  //
+  NS_ASSERT_MSG (m_address <= m_max, "Ipv4AddressHelper::NewAddress(): Address overflow");
 
   Ipv4Address addr ((m_network << m_shift) | m_address);
   ++m_address;
-//
-// The Ipv4AddressGenerator allows us to keep track of the addresses we have
-// allocated and will assert if we accidentally generate a duplicate.  This
-// avoids some really hard to debug problems.
-//
+  //
+  // The Ipv4AddressGenerator allows us to keep track of the addresses we have
+  // allocated and will assert if we accidentally generate a duplicate.  This
+  // avoids some really hard to debug problems.
+  //
   Ipv4AddressGenerator::AddAllocated (addr);
   return addr;
 }
@@ -131,42 +125,56 @@ Ipv4AddressHelper::NewNetwork (void)
   return Ipv4Address (m_network << m_shift);
 }
 
+// Ipv4AddressHelper向网络设备的接口进行地址的分配
 Ipv4InterfaceContainer
 Ipv4AddressHelper::Assign (const NetDeviceContainer &c)
 {
   NS_LOG_FUNCTION_NOARGS ();
+  // 创建一个Ipv4接口的容器 retval
   Ipv4InterfaceContainer retval;
-  for (uint32_t i = 0; i < c.GetN (); ++i) {
+  for (uint32_t i = 0; i < c.GetN (); ++i)
+    {
+      // 获取一个device
       Ptr<NetDevice> device = c.Get (i);
-
+      // 通过device获取所在的Node
       Ptr<Node> node = device->GetNode ();
       NS_ASSERT_MSG (node, "Ipv4AddressHelper::Assign(): NetDevice is not not associated "
-                     "with any node -> fail");
-
+                           "with any node -> fail");
+      // 通过node对象获得Ipv4对象
       Ptr<Ipv4> ipv4 = node->GetObject<Ipv4> ();
       NS_ASSERT_MSG (ipv4, "Ipv4AddressHelper::Assign(): NetDevice is associated"
-                     " with a node without IPv4 stack installed -> fail "
-                     "(maybe need to use InternetStackHelper?)");
-
+                           " with a node without IPv4 stack installed -> fail "
+                           "(maybe need to use InternetStackHelper?)");
+      // 调用ipv4对象为设备寻找接口
       int32_t interface = ipv4->GetInterfaceForDevice (device);
+      // 如果没有接口
       if (interface == -1)
         {
+          // 进行接口的添加
           interface = ipv4->AddInterface (device);
         }
       NS_ASSERT_MSG (interface >= 0, "Ipv4AddressHelper::Assign(): "
-                     "Interface index not found");
+                                     "Interface index not found");
 
+      // 拿到地址
       Ipv4InterfaceAddress ipv4Addr = Ipv4InterfaceAddress (NewAddress (), m_mask);
+      // 为接口设置地址
       ipv4->AddAddress (interface, ipv4Addr);
+      // 设置cost
       ipv4->SetMetric (interface, 1);
+      // 设置启动
       ipv4->SetUp (interface);
+      // 向我们的Ipv4接口容器之中进行添加pair<Ipv4,interface>
       retval.Add (ipv4, interface);
 
       // Install the default traffic control configuration if the traffic
-      // control layer has been aggregated, if this is not 
+      // control layer has been aggregated, if this is not
       // a loopback interface, and there is no queue disc installed already
+      // 如果节点之中包含有流量控制层，并且这个接口不是loopback接口，并且没有安装队列光盘
+      // 我们需要安装默认流量控制配置
       Ptr<TrafficControlLayer> tc = node->GetObject<TrafficControlLayer> ();
-      if (tc && DynamicCast<LoopbackNetDevice> (device) == 0 && tc->GetRootQueueDiscOnDevice (device) == 0)
+      if (tc && DynamicCast<LoopbackNetDevice> (device) == 0 &&
+          tc->GetRootQueueDiscOnDevice (device) == 0)
         {
           Ptr<NetDeviceQueueInterface> ndqi = device->GetObject<NetDeviceQueueInterface> ();
           // It is useless to install a queue disc if the device has no
@@ -207,4 +215,3 @@ Ipv4AddressHelper::NumAddressBits (uint32_t maskbits) const
 }
 
 } // namespace ns3
-
