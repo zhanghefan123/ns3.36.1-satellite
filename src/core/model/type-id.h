@@ -59,19 +59,18 @@ class TypeId
 {
 public:
   /** Flags describing when a given attribute can be read or written. */
-  enum AttributeFlag
-  {
+  enum AttributeFlag {
     ATTR_GET = 1 << 0, /**< The attribute can be read */
     ATTR_SET = 1 << 1, /**< The attribute can be written */
     ATTR_CONSTRUCT = 1 << 2, /**< The attribute can be written at construction-time */
-    ATTR_SGC = ATTR_GET | ATTR_SET | ATTR_CONSTRUCT, /**< The attribute can be read, and written at any time */
+    ATTR_SGC = ATTR_GET | ATTR_SET |
+               ATTR_CONSTRUCT, /**< The attribute can be read, and written at any time */
   };
   /** The level of support or deprecation for attributes or trace sources. */
-  enum SupportLevel
-  {
-    SUPPORTED,   /**< Attribute or trace source is currently used. */
-    DEPRECATED,  /**< Attribute or trace source is deprecated; user is warned. */
-    OBSOLETE     /**< Attribute or trace source is not used anymore; simulation fails. */
+  enum SupportLevel {
+    SUPPORTED, /**< Attribute or trace source is currently used. */
+    DEPRECATED, /**< Attribute or trace source is deprecated; user is warned. */
+    OBSOLETE /**< Attribute or trace source is not used anymore; simulation fails. */
   };
   /** Attribute implementation. */
   struct AttributeInformation
@@ -281,7 +280,6 @@ public:
    */
   bool MustHideFromDocumentation (void) const;
 
-
   /**
    * Get the number of Trace sources.
    *
@@ -378,13 +376,9 @@ public:
    *             See test file type-id-test-suite.cc for examples.
    * \returns This TypeId instance
    */
-  TypeId AddAttribute (std::string name,
-                       std::string help,
-                       const AttributeValue &initialValue,
-                       Ptr<const AttributeAccessor> accessor,
-                       Ptr<const AttributeChecker> checker,
-                       SupportLevel supportLevel = SUPPORTED,
-                       const std::string &supportMsg = "");
+  TypeId AddAttribute (std::string name, std::string help, const AttributeValue &initialValue,
+                       Ptr<const AttributeAccessor> accessor, Ptr<const AttributeChecker> checker,
+                       SupportLevel supportLevel = SUPPORTED, const std::string &supportMsg = "");
 
   /**
    * Set the initial value of an Attribute.
@@ -393,8 +387,7 @@ public:
    * \param [in] initialValue The new initial value to use for this attribute.
    * \returns \c true if the call was successfully.
    */
-  bool SetAttributeInitialValue (std::size_t i,
-                                 Ptr<const AttributeValue> initialValue);
+  bool SetAttributeInitialValue (std::size_t i, Ptr<const AttributeValue> initialValue);
 
   /**
    * Record in this TypeId the fact that a new attribute exists.
@@ -418,26 +411,24 @@ public:
    *             or that the functionality is no longer supported.
    * \returns This TypeId instance
    */
-  TypeId AddAttribute (std::string name,
-                       std::string help,
-                       uint32_t flags,
-                       const AttributeValue &initialValue,
-                       Ptr<const AttributeAccessor> accessor,
-                       Ptr<const AttributeChecker> checker,
-                       SupportLevel supportLevel = SUPPORTED,
+  TypeId AddAttribute (std::string name, std::string help, uint32_t flags,
+                       const AttributeValue &initialValue, Ptr<const AttributeAccessor> accessor,
+                       Ptr<const AttributeChecker> checker, SupportLevel supportLevel = SUPPORTED,
                        const std::string &supportMsg = "");
 
   /**
    * Record a new TraceSource.
    *
-   * \param [in] name The name of the new trace source
+   * \param [in] name The name of the new trace source 追踪源的名称
    * \param [in] help Some help text which describes the purpose of this
-   *             trace source.
+   *             trace source. 一些帮助信息，一般是告诉什么时候触发
    * \param [in] accessor A pointer to a TraceSourceAccessor which can be
    *             used to connect/disconnect sinks to this trace source.
+   *             一个指向TraceSourceAccessor的指针，他可以用于连接/断开与此跟踪源的连接
    * \param [in] callback Fully qualified typedef name for the callback
    *             signature.  Generally this should begin with the
    *             "ns3::" namespace qualifier.
+   *             回调函数的全类名，一般以ns3：：开头
    * \param [in] supportLevel Support/deprecation status of the attribute.
    * \param [in] supportMsg Upgrade hint if this attribute is no longer
    *             supported.  If the attribute is \c DEPRECATED the attribute
@@ -449,12 +440,9 @@ public:
    *             See test file type-id-test-suite.cc for examples.
    * \returns This TypeId instance.
    */
-  TypeId AddTraceSource (std::string name,
-                         std::string help,
-                         Ptr<const TraceSourceAccessor> accessor,
-                         std::string callback,
-                         SupportLevel supportLevel = SUPPORTED,
-                         const std::string &supportMsg = "");
+  TypeId AddTraceSource (std::string name, std::string help,
+                         Ptr<const TraceSourceAccessor> accessor, std::string callback,
+                         SupportLevel supportLevel = SUPPORTED, const std::string &supportMsg = "");
 
   /**
    * Hide this TypeId from documentation.
@@ -494,7 +482,8 @@ public:
    *  and disconnect trace sinks with the requested trace source on
    *  an object instance.
    */
-  Ptr<const TraceSourceAccessor> LookupTraceSourceByName (std::string name, struct TraceSourceInformation *info) const;
+  Ptr<const TraceSourceAccessor>
+  LookupTraceSourceByName (std::string name, struct TraceSourceInformation *info) const;
 
   /**
    * Get the internal id of this TypeId.
@@ -531,7 +520,7 @@ public:
    * \param [in] o The other TypeId.
    * \returns The copied TypeId.
    */
-  inline TypeId &operator = (const TypeId &o);
+  inline TypeId &operator= (const TypeId &o);
   /** Destructor. */
   inline ~TypeId ();
 
@@ -541,9 +530,9 @@ private:
    * Standard comparison operators.
    * @{
    */
-  friend inline bool operator == (TypeId a, TypeId b);
-  friend inline bool operator != (TypeId a, TypeId b);
-  friend  bool operator <  (TypeId a, TypeId b);
+  friend inline bool operator== (TypeId a, TypeId b);
+  friend inline bool operator!= (TypeId a, TypeId b);
+  friend bool operator<(TypeId a, TypeId b);
   /**@}*/
 
   /**
@@ -570,7 +559,7 @@ private:
  * \param [in] tid The TypeId.
  * \returns The output stream.
  */
-std::ostream & operator << (std::ostream &os, TypeId tid);
+std::ostream &operator<< (std::ostream &os, TypeId tid);
 /**
  * \relates TypeId
  * Input Streamer.
@@ -578,7 +567,7 @@ std::ostream & operator << (std::ostream &os, TypeId tid);
  * \param [out] tid The TypeId to set from the stream.
  * \returns The input stream.
  */
-std::istream & operator >> (std::istream &is, TypeId &tid);
+std::istream &operator>> (std::istream &is, TypeId &tid);
 
 /**
   * Comparison operator.
@@ -587,9 +576,9 @@ std::istream & operator >> (std::istream &is, TypeId &tid);
   * \returns The result of the comparison.
   * @{
   */
-inline bool operator == (TypeId a, TypeId b);
-inline bool operator != (TypeId a, TypeId b);
-bool operator <  (TypeId a, TypeId b);
+inline bool operator== (TypeId a, TypeId b);
+inline bool operator!= (TypeId a, TypeId b);
+bool operator<(TypeId a, TypeId b);
 /** @} */
 
 ATTRIBUTE_HELPER_HEADER (TypeId);
@@ -598,29 +587,32 @@ ATTRIBUTE_HELPER_HEADER (TypeId);
 
 namespace ns3 {
 
-TypeId::TypeId ()
-  : m_tid (0)
-{}
-TypeId::TypeId (const TypeId &o)
-  : m_tid (o.m_tid)
-{}
-TypeId &TypeId::operator = (const TypeId &o)
+TypeId::TypeId () : m_tid (0)
+{
+}
+TypeId::TypeId (const TypeId &o) : m_tid (o.m_tid)
+{
+}
+TypeId &
+TypeId::operator= (const TypeId &o)
 {
   m_tid = o.m_tid;
   return *this;
 }
 TypeId::~TypeId ()
-{}
-inline bool operator == (TypeId a, TypeId b)
+{
+}
+inline bool
+operator== (TypeId a, TypeId b)
 {
   return a.m_tid == b.m_tid;
 }
 
-inline bool operator != (TypeId a, TypeId b)
+inline bool
+operator!= (TypeId a, TypeId b)
 {
   return a.m_tid != b.m_tid;
 }
-
 
 /*************************************************************************
  *   The TypeId implementation which depends on templates
@@ -639,9 +631,10 @@ TypeId::AddConstructor (void)
 {
   struct Maker
   {
-    static ObjectBase * Create ()
+    static ObjectBase *
+    Create ()
     {
-      ObjectBase * base = new T ();
+      ObjectBase *base = new T ();
       return base;
     }
   };

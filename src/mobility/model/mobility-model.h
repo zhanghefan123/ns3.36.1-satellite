@@ -96,14 +96,15 @@ public:
    *
    * \param [in] model Value of the MobilityModel.
    */
-  typedef void (* TracedCallback)(Ptr<const MobilityModel> model);
-  
+  typedef void (*TracedCallback) (Ptr<const MobilityModel> model);
+
 protected:
   /**
    * Must be invoked by subclasses when the course of the
    * position changes to notify course change listeners.
    */
   void NotifyCourseChange (void) const;
+
 private:
   /**
    * \return the current position.
@@ -119,7 +120,7 @@ private:
    * Unless subclasses override, this method will disregard the reference
    * position and return "DoGetPosition (void)".
    */
-  virtual Vector DoGetPositionWithReference (const Vector& referencePosition) const;
+  virtual Vector DoGetPositionWithReference (const Vector &referencePosition) const;
   /**
    * \param position the position to set.
    *
@@ -147,8 +148,7 @@ private:
    * Used to alert subscribers that a change in direction, velocity,
    * or position has occurred.
    */
-  ns3::TracedCallback<Ptr<const MobilityModel> > m_courseChangeTrace;
-
+  ns3::TracedCallback<Ptr<const MobilityModel>> m_courseChangeTrace;
 };
 
 } // namespace ns3

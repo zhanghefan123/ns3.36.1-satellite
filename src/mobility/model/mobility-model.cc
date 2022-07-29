@@ -27,28 +27,26 @@ namespace ns3 {
 
 NS_OBJECT_ENSURE_REGISTERED (MobilityModel);
 
-TypeId 
+TypeId
 MobilityModel::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::MobilityModel")
-    .SetParent<Object> ()
-    .SetGroupName ("Mobility")
-    .AddAttribute ("Position", "The current position of the mobility model.",
-                   TypeId::ATTR_SET | TypeId::ATTR_GET,
-                   VectorValue (Vector (0.0, 0.0, 0.0)),
-                   MakeVectorAccessor (&MobilityModel::SetPosition,
-                                       &MobilityModel::GetPosition),
-                   MakeVectorChecker ())
-    .AddAttribute ("Velocity", "The current velocity of the mobility model.",
-                   TypeId::ATTR_GET,
-                   VectorValue (Vector (0.0, 0.0, 0.0)), // ignored initial value.
-                   MakeVectorAccessor (&MobilityModel::GetVelocity),
-                   MakeVectorChecker ())
-    .AddTraceSource ("CourseChange", 
-                     "The value of the position and/or velocity vector changed",
-                     MakeTraceSourceAccessor (&MobilityModel::m_courseChangeTrace),
-                     "ns3::MobilityModel::TracedCallback")
-  ;
+  static TypeId tid =
+      TypeId ("ns3::MobilityModel")
+          .SetParent<Object> ()
+          .SetGroupName ("Mobility")
+          .AddAttribute (
+              "Position", "The current position of the mobility model.",
+              TypeId::ATTR_SET | TypeId::ATTR_GET, VectorValue (Vector (0.0, 0.0, 0.0)),
+              MakeVectorAccessor (&MobilityModel::SetPosition, &MobilityModel::GetPosition),
+              MakeVectorChecker ())
+          .AddAttribute ("Velocity", "The current velocity of the mobility model.",
+                         TypeId::ATTR_GET,
+                         VectorValue (Vector (0.0, 0.0, 0.0)), // ignored initial value.
+                         MakeVectorAccessor (&MobilityModel::GetVelocity), MakeVectorChecker ())
+          .AddTraceSource ("CourseChange",
+                           "The value of the position and/or velocity vector changed",
+                           MakeTraceSourceAccessor (&MobilityModel::m_courseChangeTrace),
+                           "ns3::MobilityModel::TracedCallback");
   return tid;
 }
 
@@ -66,14 +64,14 @@ MobilityModel::GetPosition (void) const
   return DoGetPosition ();
 }
 Vector
-MobilityModel::GetPositionWithReference (const Vector& referencePosition) const
+MobilityModel::GetPositionWithReference (const Vector &referencePosition) const
 {
   return DoGetPositionWithReference (referencePosition);
 }
 
 // Default implementation ignores referencePosition
 Vector
-MobilityModel::DoGetPositionWithReference (const Vector& referencePosition) const
+MobilityModel::DoGetPositionWithReference (const Vector &referencePosition) const
 {
   return DoGetPosition ();
 }
@@ -84,13 +82,13 @@ MobilityModel::GetVelocity (void) const
   return DoGetVelocity ();
 }
 
-void 
+void
 MobilityModel::SetPosition (const Vector &position)
 {
   DoSetPosition (position);
 }
 
-double 
+double
 MobilityModel::GetDistanceFrom (Ptr<const MobilityModel> other) const
 {
   Vector oPosition = other->DoGetPosition ();
@@ -122,6 +120,5 @@ MobilityModel::DoAssignStreams (int64_t start)
 {
   return 0;
 }
-
 
 } // namespace ns3
