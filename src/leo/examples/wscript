@@ -1,0 +1,17 @@
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+def build(bld):
+    if not bld.env['ENABLE_EXAMPLES']:
+        return;
+
+    obj = bld.create_ns3_program('leo-orbit',
+                                 ['core', 'leo', 'mobility'])
+    obj.source = 'leo-circular-orbit-tracing-example.cc'
+
+    obj = bld.create_ns3_program('leo-delay',
+                                 ['core', 'leo', 'mobility', 'aodv', 'epidemic-routing'])
+    obj.source = 'leo-delay-tracing-example.cc'
+
+    obj = bld.create_ns3_program('leo-bulk-send',
+                                 ['core', 'leo', 'mobility', 'aodv', 'epidemic-routing'])
+    obj.source = 'leo-bulk-send-example.cc'
